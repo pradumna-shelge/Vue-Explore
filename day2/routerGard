@@ -1,0 +1,53 @@
+import { createRouter, createWebHistory } from 'vue-router';
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: Dashboard,
+      meta: { requiresAuth: true, routeType: 'dashboard' }, // Example: Route 1 with specific routeType
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: Profile,
+      meta: { requiresAuth: true, routeType: 'profile' }, // Example: Route 2 with specific routeType
+    },
+    // Other routes...
+  ],
+});
+
+// Global Before Guard
+router.beforeEach((to, from, next) => {
+  // Check if the route requires authentication
+  if (to.meta.requiresAuth) {
+    // Determine the route type based on a custom meta property
+    const routeType = to.meta.routeType;
+
+    // Apply different authentication logic based on route type
+    if (routeType === 'dashboard') {
+      const isAuthenticated = checkAuthenticationForDashboardRoute(); // Replace with your authentication logic for the dashboard route
+      if (isAuthenticated) {
+        next(); // Proceed to the dashboard route
+      } else {
+        next('/login'); // Redirect to the login page if not authenticated for the dashboard route
+      }
+    } else if (routeType === 'profile') {
+      const isAuthenticated = checkAuthenticationForProfileRoute(); // Replace with your authentication logic for the profile route
+      if (isAuthenticated) {
+        next(); // Proceed to the profile route
+      } else {
+        next('/login'); // Redirect to the login page if not authenticated for the profile route
+      }
+    } else {
+      // Handle other route types as needed
+      next();
+    }
+  } else {
+    next(); // Route does not require authentication, proceed
+  }
+});
+
+export default router;

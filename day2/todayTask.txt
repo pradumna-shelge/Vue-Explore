@@ -1,0 +1,20 @@
+1. Template syntax
+-binding using ref, reactive
+-Dynamic attributes
+-computed property, getter, setter
+
+2. Class and Style Bindings
+-Binding to Objects
+
+3. Rendering
+-Conditional Rendering
+-List Rendering
+ 
+ 4. Event Handling
+
+ 5. Form Input Bindings
+
+13-09-2023
+1. Shopping website Vue.js
+2. Login page, validation
+3. Product API call

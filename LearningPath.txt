@@ -1,0 +1,98 @@
+1. Introduction to Vue.js
+
+    Setting up Vue.js using a CDN or Vue CLI
+    Vue.js instance and data binding
+
+Project 1: Hello World Vue App
+
+    Create a simple Vue app that displays a "Hello, Vue!" message.
+
+2. Vue.js Directives
+
+    v-bind (data binding)
+    v-model (two-way data binding)
+
+Project 2: Dynamic Counter
+
+    Build a counter app where you can increment and decrement a number using Vue directives.
+
+3. Vue.js Components
+
+    Creating and registering components
+    Props and custom events
+
+Project 3: Task List with Components
+
+    Transform   earlier to-do list into a Vue app with reusable task components.
+
+4. Vue Router
+
+    Setting up routing in Vue.js
+    Route parameters and navigation guards
+
+Project 4: Single Page Application (SPA)
+
+    Create a multi-page Vue app using Vue Router with navigation between different sections.
+
+5. State Management with Vuex
+
+    Understanding state management
+    Creating a Vuex store
+
+Project 5: Shopping Cart with Vuex
+
+    Build a simple e-commerce shopping cart using Vuex to manage the state.
+
+6. Advanced Vue.js Concepts
+
+    Custom directives
+    Mixins
+
+Project 6: Custom Directive for Styling
+
+    Create a custom directive that changes the background color of an element when it's clicked.
+
+7. Vue.js Development Tools
+
+    Vue Devtools
+    Vue CLI (Command Line Interface)
+
+Project 7: Vue CLI Starter
+
+    Initialize a Vue CLI project and explore its features.
+
+8. Building Real-World Projects
+
+    Apply   knowledge to build practical applications
+
+Project 8: Blog App
+
+    Create a blog application with Vue.js that allows users to create, edit, and delete blog posts.
+
+9. Testing in Vue.js
+
+    Unit testing with Vue Test Utils and Jest
+    End-to-end testing with tools like Cypress
+
+Project 9: Unit Testing
+
+    Write unit tests for some of   components, ensuring they behave as expected.
+
+10. Performance Optimization
+
+    Code splitting
+    Lazy loading
+    Bundle size optimization
+
+Project 10: Lazy Loading Routes
+
+    Implement lazy loading for routes in   SPA to improve initial load times.
+
+11. Deployment and Production
+
+    Preparing   Vue.js app for production
+    Hosting and deployment options
+
+Project 11: Deploy   Portfolio
+
+    Deploy   personal portfolio website to a hosting service like Netlify or GitHub Pages.
