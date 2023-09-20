@@ -265,3 +265,6 @@ D:\VUE\Vue-Explore\project\shoppingWebsite\BackEnd\BackEnd\bin\Debug\net6.0\ru\M
 D:\VUE\Vue-Explore\project\shoppingWebsite\BackEnd\BackEnd\bin\Debug\net6.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
 D:\VUE\Vue-Explore\project\shoppingWebsite\BackEnd\BackEnd\bin\Debug\net6.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 D:\VUE\Vue-Explore\project\shoppingWebsite\BackEnd\BackEnd\bin\Debug\net6.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\VUE\Vue-Explore\project\shoppingWebsite\BackEnd\BackEnd\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\VUE\Vue-Explore\project\shoppingWebsite\BackEnd\BackEnd\bin\Debug\net6.0\AWSSDK.Core.dll
+D:\VUE\Vue-Explore\project\shoppingWebsite\BackEnd\BackEnd\bin\Debug\net6.0\AWSSDK.S3.dll

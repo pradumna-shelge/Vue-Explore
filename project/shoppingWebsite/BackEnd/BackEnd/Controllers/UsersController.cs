@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BackEnd.Models;
 using System.Security.Cryptography;
 using BackEnd.DTOs;
+using BackEnd.Services;
 
 namespace BackEnd.Controllers
 {
@@ -82,43 +83,41 @@ namespace BackEnd.Controllers
             return NoContent();
         }
 
-        // POST: api/Users
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<User>> PostUser(userDto user)
-        {
-          if (_context.Users == null)
-          {
-              return Problem("Entity set 'MyShoppingContext.Users'  is null.");
-          }
-            user.PasswordHash = HashPassword(user.PasswordHash);
-            var newUser = new User()
-            {
-                Username = user.Username,
-                PasswordHash = user.PasswordHash,
-                Email = user.Email,
-                RegistrationDate = user.RegistrationDate
-                
 
-            };
-            _context.Users.Add(newUser);
+        [HttpPost]
+        public async Task<ActionResult> PostUser(userDto user)
+        {
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (UserExists(newUser.UserId))
+                if (_context.Users == null)
                 {
-                    return Conflict();
+                    return Problem("Entity set 'MyShoppingContext.Users'  is null.");
                 }
-                else
-                {
-                    throw;
-                }
-            }
+                var users = await _context.Users.ToListAsync();
 
-            return CreatedAtAction("GetUser", new { id = newUser.UserId }, user);
+                if(users.Find(u=>u.Username == user.Username) != null)
+                {
+                    return BadRequest("That username is taken.Try another");
+                }
+
+                user.PasswordHash = HashPasswordClass.HashPassword(user.PasswordHash);
+                var newUser = new User()
+                {
+                    Username = user.Username,
+                    PasswordHash = user.PasswordHash,
+                    Email = user.Email,
+                    RegistrationDate = user.RegistrationDate
+                };
+                _context.Users.Add(newUser);
+                await _context.SaveChangesAsync();
+                return Ok("User added");
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return BadRequest();
+            }
+          
+          
         }
 
         // DELETE: api/Users/5
@@ -146,26 +145,7 @@ namespace BackEnd.Controllers
             return (_context.Users?.Any(e => e.UserId == id)).GetValueOrDefault();
         }
 
-        public static string HashPassword(string password)
-        {
-            
-            byte[] salt;
-            new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
-
-           
-            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000, HashAlgorithmName.SHA256);
-            byte[] hashBytes = pbkdf2.GetBytes(32);
-
-           
-            byte[] combinedBytes = new byte[16 + 32]; 
-            Array.Copy(salt, 0, combinedBytes, 0, 16);
-            Array.Copy(hashBytes, 0, combinedBytes, 16, 32);
-
-            
-            string hashedPassword = Convert.ToBase64String(combinedBytes);
-
-            return hashedPassword;
-        }
+        
 
     }
 }

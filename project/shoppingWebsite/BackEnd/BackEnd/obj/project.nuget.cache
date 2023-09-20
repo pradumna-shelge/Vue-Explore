@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "1Vu7S+7ha8S8abwRX/YFXnmgGO5ROvq/q8ZflNFYevaUx5VKx7y7HB22vj7D9B4IoW0FDHyyAqkSSk2/ej94kw==",
+  "dgSpecHash": "zTxC8BzwqcxoDTlRYnlMH2xqHEuYVjcazYNd9m5RUx1wIq/0TFF+t31DwG7OhzbacChOUjpvS2cWZZyeoRLypw==",
   "success": true,
   "projectFilePath": "D:\\VUE\\Vue-Explore\\project\\shoppingWebsite\\BackEnd\\BackEnd\\BackEnd.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\pradumna.shelage\\.nuget\\packages\\awssdk.core\\3.7.202.9\\awssdk.core.3.7.202.9.nupkg.sha512",
+    "C:\\Users\\pradumna.shelage\\.nuget\\packages\\awssdk.s3\\3.7.203.15\\awssdk.s3.3.7.203.15.nupkg.sha512",
     "C:\\Users\\pradumna.shelage\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\pradumna.shelage\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
     "C:\\Users\\pradumna.shelage\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
@@ -59,6 +61,7 @@
     "C:\\Users\\pradumna.shelage\\.nuget\\packages\\messagepack\\2.1.152\\messagepack.2.1.152.nupkg.sha512",
     "C:\\Users\\pradumna.shelage\\.nuget\\packages\\messagepack.annotations\\2.1.152\\messagepack.annotations.2.1.152.nupkg.sha512",
     "C:\\Users\\pradumna.shelage\\.nuget\\packages\\messagepackanalyzer\\2.1.152\\messagepackanalyzer.2.1.152.nupkg.sha512",
+    "C:\\Users\\pradumna.shelage\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.0\\microsoft.aspnetcore.authentication.jwtbearer.6.0.0.nupkg.sha512",
     "C:\\Users\\pradumna.shelage\\.nuget\\packages\\microsoft.aspnetcore.razor.language\\6.0.0\\microsoft.aspnetcore.razor.language.6.0.0.nupkg.sha512",
     "C:\\Users\\pradumna.shelage\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\5.0.0\\microsoft.bcl.asyncinterfaces.5.0.0.nupkg.sha512",
     "C:\\Users\\pradumna.shelage\\.nuget\\packages\\microsoft.build\\17.3.2\\microsoft.build.17.3.2.nupkg.sha512",

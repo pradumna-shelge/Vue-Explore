@@ -57,12 +57,21 @@ CREATE TABLE OrderItems (
     FOREIGN KEY (OrderID) REFERENCES Orders (OrderID),
     FOREIGN KEY (ProductID) REFERENCES Products (ProductID)
 );
+CREATE TABLE AddToCart (
+    CartID INT PRIMARY KEY IDENTITY(1,1),
+    UserID INT, -- Foreign key to link the cart with a specific user
+    ProductID INT, -- Foreign key to link the cart with a specific product
+    Quantity INT NOT NULL,
+    AddedDateTime DATETIME NOT NULL,
+    FOREIGN KEY (UserID) REFERENCES Users (UserID),
+    FOREIGN KEY (ProductID) REFERENCES Products (ProductID)
+);
 
 
 INSERT INTO Products (ProductName, Description, Price,ProductImage)
 VALUES
-    ('iPhone 13 Pro', 'Apple iPhone 13 Pro with A15 Bionic chip and Pro camera system.', 999.99,),
-    ('Samsung Galaxy S21', 'Samsung Galaxy S21 5G with 8K video and Exynos 2100.', 799.99,),
-    ('Sony PlayStation 5', 'Sony PS5 gaming console with 4K Ultra HD Blu-ray.', 499.99,),
-    ('MacBook Air', 'Apple MacBook Air with M1 chip and Retina display.', 1199.99,),
+    ('iPhone 13 Pro', 'Apple iPhone 13 Pro with A15 Bionic chip and Pro camera system.', 999.99,'https://www.apple.com/newsroom/images/product/iphone/standard/Apple_iphone13_hero_09142021_inline.jpg.slideshow-medium_2x.jpg'),
+    ('Samsung Galaxy S21', 'Samsung Galaxy S21 5G with 8K video and Exynos 2100.', 799.99,'https://images.samsung.com/is/image/samsung/p6pim/in/sm-g990blg4ins/gallery/in-galaxy-s21-fe-g990-464368-sm-g990blg4ins-thumb-537060640'),
+    ('Sony PlayStation 5', 'Sony PS5 gaming console with 4K Ultra HD Blu-ray.', 499.99,'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSG8EWm1vwNnXFsblkeOCQbmfXf-3Lm7F7Pn7F62HcB_yBd9BKr7vo36qpqQRUDzcpDbc4&usqp=CAU'),
+    ('MacBook Air', 'Apple MacBook Air with M1 chip and Retina display.', 1199.99,'https://photos5.appleinsider.com/gallery/49833-97645-Brydge-ProDock-xl.jpg');
  

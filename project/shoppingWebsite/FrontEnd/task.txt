@@ -1,0 +1,23 @@
+  Date  -18/09/2023
+  1. Meeting with maniar sir
+  2. Custom validations and image upload validations
+  3. Worked on UI part and pagination
+
+
+  Date- 19/09/2023
+  1. Product edit and image validation.
+  2. Token store and decode.
+  3. Pagination, create a Custom modal.
+
+
+  Date- 20/09/2023
+  1. Functional bug solved in Vue.js project.
+  2. Searching and sorting on individual columns.
+  3. UI bugs and edit product validation.
+  4. Meeting with Maniar sir
+
+
+Removing of image file from server after deleting of record.
+There should be searching and sorting in grid for each column.
+
+
