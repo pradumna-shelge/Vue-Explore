@@ -18,14 +18,14 @@ namespace BackEnd.Services
            .Build();
         }
 
-        public  string createToken(string user)
+        public  string createToken(string user,string role)
         {
             var sec = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configure.GetSection("Jwt:key").Value));
             var cre = new SigningCredentials(sec, SecurityAlgorithms.HmacSha256);
             var clames = new[] {
 
                   new Claim(ClaimTypes.Name, user),
-                new Claim(ClaimTypes.Role,"user")
+                new Claim(ClaimTypes.Role,role)
 
 
             };

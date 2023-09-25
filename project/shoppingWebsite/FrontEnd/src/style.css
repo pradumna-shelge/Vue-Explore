@@ -43,3 +43,7 @@ html {
       min-width: 200px;
       max-width: 400px;
   }
+#screen{
+    min-height: 1000px;
+}
+  

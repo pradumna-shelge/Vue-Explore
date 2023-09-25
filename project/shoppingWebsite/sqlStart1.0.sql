@@ -23,6 +23,14 @@ CREATE TABLE Users (
     RegistrationDate DATETIME NOT NULL
 );
 
+
+ALTER TABLE Users
+ADD OTP VARCHAR(6),
+    OTPDateTime DATETIME,
+    LastLogin DATETIME,
+    LoginPCNo VARCHAR(50);
+
+
 CREATE TABLE UserRoleMapping (
     MappingID INT PRIMARY KEY IDENTITY(1,1),
     UserID INT,

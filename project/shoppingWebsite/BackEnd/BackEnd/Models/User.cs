@@ -15,6 +15,14 @@ public partial class User
 
     public DateTime RegistrationDate { get; set; }
 
+    public string? Otp { get; set; }
+
+    public DateTime? OtpdateTime { get; set; }
+
+    public DateTime? LastLogin { get; set; }
+
+    public string? LoginPcno { get; set; }
+
     public virtual ICollection<AddToCart> AddToCarts { get; set; } = new List<AddToCart>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();

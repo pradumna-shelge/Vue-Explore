@@ -29,9 +29,9 @@ async function signUp() {
     if (isValid) {
         try {
             await addUser(formData.username, formData.email, formData.password);
-            successMessage.value = 'Signup successful! You can now log in.';
+            // successMessage.value = 'Signup successful! You can now log in.';
            
-            router.push({ path: '/login' });
+            // router.push({ path: '/login' });
         } catch (error) {
             console.error('Error:', error);
         }

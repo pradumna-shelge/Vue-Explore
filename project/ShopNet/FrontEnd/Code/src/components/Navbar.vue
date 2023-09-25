@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import logo from '../assets/logo.png';
 import router from '../routers';
-import { loggedInUsername, setUserInfo } from '../services/userService';
+import { loggedInUsername, setUserInfo,decodeUserInfo } from '../services/userService';
 import { defineProps, defineEmits } from 'vue';
 
 defineProps(['flag']);
@@ -16,7 +16,7 @@ const logout = () => {
 }
 
 onMounted(() => {
-    setUserInfo();
+   decodeUserInfo();
 });
 </script>
 

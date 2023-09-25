@@ -4,6 +4,7 @@ import login from '../components/login.vue'
 import error from '../components/error.vue'
 import signup from '../components/signUp.vue'
 import dashboard from '../components/Admin/dashboard.vue'
+import ForgotPasswordVue from '../components/ForgotPassword.Vue'
 const routes = [
     {
         path:'/',
@@ -64,6 +65,12 @@ const routes = [
         next({ name: 'login' });
       }
     }
+    },
+    {
+      path:'/forgot-password',
+      name:ForgotPasswordVue,
+      component:ForgotPasswordVue
+
     }
 ]
 

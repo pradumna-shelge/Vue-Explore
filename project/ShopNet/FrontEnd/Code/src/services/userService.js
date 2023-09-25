@@ -10,6 +10,7 @@ export const isLoggedIn = localStorage.getItem("userInfo") != null;
 
 export const decodeUserInfo = () => {
   try {
+    debugger;
     let tokenData = localStorage.getItem("userInfo");
     var base64Payload = tokenData.split(".")[1];
     var payload = decodeURIComponent(

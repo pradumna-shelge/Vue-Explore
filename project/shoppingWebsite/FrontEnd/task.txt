@@ -16,6 +16,21 @@
   3. UI bugs and edit product validation.
   4. Meeting with Maniar sir
 
+Date- 21/09/2023
+1. Encrypting and decrypting request and response data for controllers data security
+2. Print product data in Excel 
+3. Search validation and UI bug solving
+
+Date- 21/09/2023
+1. Last login detail pop-up
+2. Role base authentication and navigation
+3. Intermediate topics learning Vue.js 
+4. Meeting with Maniar sir
+
+
+
+
+
 
 Removing of image file from server after deleting of record.
 There should be searching and sorting in grid for each column.

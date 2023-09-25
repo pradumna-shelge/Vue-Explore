@@ -1,4 +1,6 @@
 <script setup lang="js">
+import * as XLSX from 'xlsx';
+
 import spinner from './spinner.vue'
 import { reactive, ref, computed, onMounted } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
@@ -7,7 +9,7 @@ import { required } from '@vuelidate/validators';
 import { createToaster } from "@meforma/vue-toaster";
 import { userApi, loginApi, productApi, imageApi } from '../../Endpoints/ApiLinks'
 import { getApiData, ProductAdd, ProductDelete, ProductUpdate } from '../../Services/products'
-
+import { loginRole } from './../../Services/islogin'
 const currentPage = ref(1);
 const DeleteId = ref(-1);
 const itemsPerPage = ref(5); 
@@ -122,11 +124,11 @@ function handleImageChange(event) {
   const maxSize = 2 * 1024 * 1024; // 2 MB
 
   if (!allowedTypes.includes(fileType.toLowerCase())) {
-    toaster.error("Unsupported file type. Please select a PNG, JPEG, JPG, or BMP file.");
+    toaster.error("Unsupported file type! Please select a PNG, JPEG, JPG, or BMP file.");
     event.target.value = "";
     return;
   } else if (selectedFile.size > maxSize) {
-    toaster.error("File size exceeds the maximum limit of 2 MB.");
+    toaster.error("File size exceeds the maximum limit of 2 MB!");
     event.target.value = "";
     return;
   }
@@ -142,7 +144,7 @@ function handleImageChange(event) {
   };
   img.onerror = () => {
    
-    toaster.error("Invalid image content. Please select a valid image file.");
+    toaster.error("Invalid image content! Please select a valid image file.");
     event.target.value = "";
   };
   img.src = imageUrl;
@@ -200,7 +202,7 @@ if (d) {
       .then((imageUrl) => {
         asyncFunction();
       productUpdateFlag.value = false
-        toaster.success("Product Updated successfully.");
+        toaster.success("Product updated successfully.");
         productData.productName = null;
         productData.productImage = null;
         productData.description = null;
@@ -229,9 +231,9 @@ async function deleteProduct() {
     toaster.success("Product deleted successfully.");
     asyncFunction();
   } catch (error) {
-    console.error(error.response.data);
+    console.error(error.response.data+"!");
     flag.value = false;
-    toaster.error(error.response.data);
+    toaster.error(error.response.data + "!");
   }
 }
 
@@ -296,6 +298,8 @@ const closeModal = ()=>{
 }
 
 const searchColumn=(col,key)=>{
+    key = key.trim();
+  key = key.split("  ").join(" ")
   console.log(key);
    switch (col) {
     case 'productName':
@@ -351,6 +355,25 @@ const sortColumn =(col,sortFlag)=>{
       break;
   }
 }
+const printTable = () => {
+  const data = products.value;
+
+
+  const filteredData = data.map(item => {
+    const { productName, description, price } = item;
+    return { Product: productName, Description: description, Price: price };
+  });
+
+
+  const ws = XLSX.utils.json_to_sheet(filteredData);
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  XLSX.writeFile(wb, 'Product Data.xlsx');
+};
+
+
+    
 onMounted(() => {
   asyncFunction();
 });
@@ -362,12 +385,13 @@ import Product from './Product.vue'
 </script>
 
 <template>
+  
   <spinner :flag="flag"></spinner>
 
  
   <div class="flex flex-row justify-center gap-10">
    
-        <div class="basis-1/4  ">
+        <div v-if="loginRole=='admin'" class="basis-1/4  ">
           <div
             class="w-full bg-white rounded-lg hover:shadow-xl dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700"
           >
@@ -466,27 +490,18 @@ import Product from './Product.vue'
           <div class="flex items-center justify-center gap-5">
     <button
     v-if="!productUpdateFlag"
-      type="submit"
-      class="relative inline-flex items-center justify-center px-10 py-4 overflow-hidden font-mono font-medium tracking-tighter text-white bg-gray-800 rounded-lg group"
-    >
-      <span class="absolute w-0 h-0 transition-all duration-500 ease-out bg-green-500 rounded-full group-hover:w-56 group-hover:h-56"></span>
-      <span class="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-gray-700"></span>
-      <span class="relative">Save Product</span>
+      type="submit" class=" btn text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-900">
+      Save Product
     </button>
 
-   <button @click="cancelUpdate" v-if="!productUpdateFlag" type="reset" class="text-gray-900 hover:text-rose-500 ">Cancel</button>
 
    <button
    @click="updateProduct()"
       v-if="productUpdateFlag"
-       type="button"
-        class="relative inline-flex items-center justify-center px-10 py-4 overflow-hidden font-mono font-medium tracking-tighter text-white bg-cyan-800 rounded-lg group"
-      >
-        <span class="absolute w-0 h-0 transition-all duration-500 ease-out bg-green-500 rounded-full group-hover:w-56 group-hover:h-56"></span>
-        <span class="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-gray-700"></span>
-        <span class="relative">Update </span>
+        type="button" class="  btn text-cyan-700 hover:text-white border border-cyan-700 hover:bg-cyan-800 focus:ring-4 focus:outline-none focus:ring-cyan-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-cyan-500 dark:text-cyan-500 dark:hover:text-white dark:hover:bg-cyan-600 dark:focus:ring-cyan-900">
+        Update 
       </button>
-        <button @click="cancelUpdate" v-if="productUpdateFlag" type="reset" class="text-gray-900 hover:text-rose-500 ">Cancel</button>
+        <button @click="cancelUpdate"   type="button" class=" btn text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">{{ productUpdateFlag?'Cancel':'Reset'}}</button>
 
 
   </div>
@@ -500,133 +515,149 @@ import Product from './Product.vue'
   
       
           <div class="basis-1/2">
-            <table class="hover:shadow-xl hover:border-2 text-right">
-              <thead class="w-100">
-                <tr class="border bg-gray-50">
-                  <th
-                    class="  px-6 py-3  text-left text-sm leading-4 font-medium text-gray-500 tracking-wider"
-                  >
-                     <span class="flex justify-center"> <span>Product</span>  <svg   @click="sortColumn('productName',true)" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="hover:text-gray-900 bi bi-caret-up-fill" viewBox="0 0 16 16">
-    <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
-  </svg><svg @click="sortColumn('productName', false)"  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="hover:text-gray-900 bi bi-caret-down-fill" viewBox="0 0 16 16">
-    <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
-  </svg></span>
-  <div class="flex justify-center">
-
-    <input placeholder="search  by Name"  class="border-2  rounded px-1" type="text"  @input="searchColumn('productName', $event.target.value)">
-  </div>
-                  </th>
-                  <th
-                    class="   px-3 py-3  text-left text-sm leading-4 font-medium text-gray-500 tracking-wider"
-                  >
-                    
-                    <span class="flex justify-center"> <span>Description</span><svg  @click="sortColumn('description', true)" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="hover:text-gray-900 bi bi-caret-up-fill" viewBox="0 0 16 16">
+            <div  class="flex gap-3" >
+      
+              <table id="productable" class="hover:shadow-xl hover:border-2 text-right">
+                <thead class="w-100">
+                  <tr class="border bg-gray-50">
+                    <th
+                      class="  px-6 py-3  text-left text-sm leading-4 font-medium text-gray-500 tracking-wider"
+                    >
+                       <span class="flex justify-center"> <span>Product</span>  <svg   @click="sortColumn('productName',true)" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="hover:text-gray-900 bi bi-caret-up-fill" viewBox="0 0 16 16">
       <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
-    </svg><svg @click="sortColumn('description', false)"  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="hover:text-gray-900 bi bi-caret-down-fill" viewBox="0 0 16 16">
+    </svg><svg @click="sortColumn('productName', false)"  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="hover:text-gray-900 bi bi-caret-down-fill" viewBox="0 0 16 16">
       <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
     </svg></span>
     <div class="flex justify-center">
-
-      <input  placeholder="search  by Description"  class="mx-auto border-2 rounded px-1 w-100" type="text"  @input="searchColumn('description', $event.target.value)">
+  
+      <input placeholder="search  by Name"  class="border-2  rounded px-1" type="text"  @input="searchColumn('productName', $event.target.value)">
     </div>
-
-                  </th>
-                  <th
-                    class="  px-6 py-3  text-left text-sm leading-4 font-medium text-gray-500 tracking-wider"
-                  >
-                   
-                        <span class="flex justify-center"><span> Price</span><svg  @click="sortColumn('price', true)" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="hover:text-gray-900 bi bi-caret-up-fill" viewBox="0 0 16 16">
+                    </th>
+                    <th
+                      class="   px-3 py-3  text-left text-sm leading-4 font-medium text-gray-500 tracking-wider"
+                    >
+                      
+                      <span class="flex justify-center"> <span>Description</span><svg  @click="sortColumn('description', true)" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="hover:text-gray-900 bi bi-caret-up-fill" viewBox="0 0 16 16">
         <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
-      </svg><svg @click="sortColumn('price', false)"  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="hover:text-gray-900 bi bi-caret-down-fill" viewBox="0 0 16 16">
+      </svg><svg @click="sortColumn('description', false)"  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="hover:text-gray-900 bi bi-caret-down-fill" viewBox="0 0 16 16">
         <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
       </svg></span>
-            <!-- <input class="border" type="text"  @input="searchColumn('price', $event.target.value)">
-             -->
-             <div class="flex justify-center">
-
-               <select id="price-filter"  @change="searchColumn('price', $event.target.value)">
-                 <option value="all" selected>All Prices</option>
-                 <option value="0-500">0-500</option>
-                 <option value="500-1000">500-1000</option>
-                 <option value="1000-100000">1000-more</option>
-               </select>
-             </div>
-                  </th>
-                  <!-- <th class="px-6 py-3   "></th> -->
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(p, index) in displayedProducts" :key="index">
-                  <td class="px-6 py-4 whitespace-no-wrap border">
-                    <div class="flex items-center">
-                      <div class="flex-shrink-0 h-10 w-10">
-                        <img
-                          class="h-10 w-10 rounded-full object-cover"
-                          :src="p.productImage"
-                          alt="Product Image"
-                        />
-                      </div>
-                      <div class="ml-4">
-                        <div
-                          class="text-sm leading-5 font-medium text-gray-900"
-                        >
-                          {{ p.productName }}
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-no-wrap border">
-                    <div class="text-sm leading-5 text-gray-900">
-                      {{ p.description }}
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-no-wrap border">
-                    <div class="text-sm leading-5 text-gray-900">
-                      ${{ p.price }}
-                    </div>
-                  </td>
-                  <td
-                    class="px-6 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium"
-                  >
-                    <a @click="patchValue(p)" class="text-indigo-600 hover:text-indigo-900"
-                      ><svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        class="w-6 h-6"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                        />
-                      </svg>
-                    </a>
-                    <span class="text-gray-300 mx-2">  </span>
-
-                    <a
-                      @click="open(p.productId)"
-                      class="text-red-600 hover:text-red-900"
+      <div class="flex justify-center">
+  
+        <input  placeholder="search  by Description"  class="mx-auto border-2 rounded px-1 w-100" type="text"  @input="searchColumn('description', $event.target.value)">
+      </div>
+  
+                    </th>
+                    <th
+                      class="  px-2 py-3  text-left text-sm leading-4 font-medium text-gray-500 "
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke-width="1.5"
-                        stroke="currentColor"
-                        class="w-6 h-6"
+                     
+                          <span class="flex justify-center"><span> Price</span><svg  @click="sortColumn('price', true)" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="hover:text-gray-900 bi bi-caret-up-fill" viewBox="0 0 16 16">
+          <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+        </svg><svg @click="sortColumn('price', false)"  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="hover:text-gray-900 bi bi-caret-down-fill" viewBox="0 0 16 16">
+          <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+        </svg></span>
+              <!-- <input class="border" type="text"  @input="searchColumn('price', $event.target.value)">
+               -->
+               <div class="flex justify-center">
+  
+                 <select id="price-filter"  @change="searchColumn('price', $event.target.value)">
+                   <option value="all" selected>All Prices</option>
+                   <option value="0-500">0-500</option>
+                   <option value="500-1000">500-1000</option>
+                   <option value="1000-9999999">1000-more</option>
+                 </select>
+               </div>
+                    </th>
+                    <td v-if="loginRole == 'admin'" >     <div class="flex justify-center">
+                    <button @click="printTable()" class="Btn">
+         <svg class="svgIcon" viewBox="0 0 384 512" height="1em" xmlns="http://www.w3.org/2000/svg"><path d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"></path></svg>
+         <span class="icon2"></span>
+         <span class="tooltip">Download</span>
+      </button>
+    </div></td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(p, index) in displayedProducts" :key="index">
+                    <td class="px-5 py-4  border  ">
+                      <div class="flex items-center justify-between  ">
+                        <div class=" ">
+                          <img
+                            class="h-10 w-10 rounded-full object-cover"
+                            :src="p.productImage"
+                            alt="Product Image"
+                          />
+                        </div>
+                        
+                          <div
+                            class=" text-sm  font-medium text-gray-900"
+                          >
+                            {{ p.productName }}
+                          </div>
+                        
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-no-wrap border">
+                      <div class="text-sm leading-5 text-gray-900">
+                        {{ p.description }}
+                      </div>
+                    </td>
+                    <td class="px-2 py-4 whitespace-no-wrap border">
+                      <div class="text-sm leading-2 text-gray-900">
+                        ${{ p.price }}
+                      </div>
+                    </td>
+                    <td v-if="loginRole == 'admin'"
+                      class="px-3 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium"
+                    >
+                      <a @click="patchValue(p)" class="text-indigo-600 hover:text-indigo-900"
+                        ><svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="w-6 h-6"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                          />
+                        </svg>
+                      </a>
+                      <span class="text-gray-300 mx-2">  </span>
+  
+                      <a
+                        @click="open(p.productId)"
+                        class="text-red-600 hover:text-red-900"
                       >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-            /></svg></a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="w-6 h-6"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+              /></svg></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <button v-if="loginRole!='admin'" @click="printTable()" class="Btn mt-2">
+           <svg class="svgIcon" viewBox="0 0 384 512" height="1em" xmlns="http://www.w3.org/2000/svg"><path d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"></path></svg>
+           <span class="icon2"></span>
+           <span class="tooltip">Download</span>
+        </button>
+ 
+  </div>
+            
             <div class="flex justify-end mt-10">
   <div class=" ">
           <label for="itemsPerPage" class=" mb-2 text-sm font-medium text-gray-900">Items Per Page</label>
@@ -678,7 +709,101 @@ import Product from './Product.vue'
 
 <style scoped>
 th{
-  min-width: 200px !important;
+  max-width: 200px !important;
+  min-width: 50px !important;
  
 }
+.btn{
+  width:150px;
+}
+.Btn {
+ width: 37px;
+    height: 34px;
+  border: none;
+  border-radius: 50%;
+  background-color: rgb(7, 2, 85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition-duration: .3s;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.11);
+}
+
+.svgIcon {
+  fill: rgb(214, 178, 255);
+}
+
+.icon2 {
+  width: 11px;
+  height: 5px;
+  border-bottom: 2px solid rgb(182, 143, 255);
+  border-left: 2px solid rgb(182, 143, 255);
+  border-right: 2px solid rgb(182, 143, 255);
+}
+
+.tooltip {
+  position: absolute;
+  right: -105px;
+  opacity: 0;
+  background-color: rgb(12, 12, 12);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition-duration: .2s;
+  pointer-events: none;
+  letter-spacing: 0.5px;
+}
+
+.tooltip::before {
+  position: absolute;
+  content: "";
+  width: 10px;
+  height: 10px;
+  background-color: rgb(12, 12, 12);
+  background-size: 1000%;
+  background-position: center;
+  transform: rotate(45deg);
+  left: -5%;
+  transition-duration: .3s;
+}
+
+.Btn:hover .tooltip {
+  opacity: 1;
+  transition-duration: .3s;
+}
+
+.Btn:hover {
+  background-color: rgb(150, 94, 255);
+  transition-duration: .3s;
+}
+
+.Btn:hover .icon2 {
+  border-bottom: 2px solid rgb(235, 235, 235);
+  border-left: 2px solid rgb(235, 235, 235);
+  border-right: 2px solid rgb(235, 235, 235);
+}
+
+.Btn:hover .svgIcon {
+  fill: rgb(255, 255, 255);
+  animation: slide-in-top 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+@keyframes slide-in-top {
+  0% {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+
 </style>

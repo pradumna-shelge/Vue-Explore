@@ -106,10 +106,21 @@ namespace BackEnd.Controllers
                     Username = user.Username,
                     PasswordHash = user.PasswordHash,
                     Email = user.Email,
-                    RegistrationDate = user.RegistrationDate
+                    RegistrationDate = user.RegistrationDate,
+                    LastLogin = DateTime.Now,
+                    
                 };
-                _context.Users.Add(newUser);
+                await _context.Users.AddAsync(newUser);
                 await _context.SaveChangesAsync();
+                var listUsers = await _context.Users.ToListAsync();
+                var usermappin = new UserRoleMapping
+                {
+                    UserId = newUser.UserId,
+                    RoleId =  listUsers.ToList().Count()>1 ? 2 : 1
+                };
+                await _context.UserRoleMappings.AddAsync(usermappin);
+                await _context.SaveChangesAsync();
+
                 return Ok("User added");
             }
             catch (DbUpdateConcurrencyException)

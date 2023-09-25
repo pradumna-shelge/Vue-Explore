@@ -51,8 +51,8 @@ onMounted(() => {
       <div class="items-start justify-start hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
         <ul class="text-white flex justify-around gap-4">
            <button  class=""> <router-link to="/">Home</router-link> </button>
-          <button  v-if="flag" class=""> <router-link to="/dashboard">Dashboard</router-link> </button>
-          <button  v-if="!flag" class=""> <router-link to="/login">Dashboard</router-link> </button>
+          <button  v-if="flag" class=""> <router-link to="/dashboard">Products</router-link> </button>
+          <button  v-if="!flag" class=""> <router-link to="/login">Products</router-link> </button>
           
         </ul>
       </div>

@@ -111,6 +111,18 @@ public partial class MyShoppingContext : DbContext
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .IsUnicode(false);
+            entity.Property(e => e.LastLogin).HasColumnType("datetime");
+            entity.Property(e => e.LoginPcno)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("LoginPCNo");
+            entity.Property(e => e.Otp)
+                .HasMaxLength(6)
+                .IsUnicode(false)
+                .HasColumnName("OTP");
+            entity.Property(e => e.OtpdateTime)
+                .HasColumnType("datetime")
+                .HasColumnName("OTPDateTime");
             entity.Property(e => e.PasswordHash)
                 .HasMaxLength(100)
                 .IsUnicode(false);

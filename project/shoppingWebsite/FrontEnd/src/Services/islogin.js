@@ -1,11 +1,13 @@
 import { ref } from "vue";
-import { userApi, loginApi } from "../Endpoints/ApiLinks";
+import { userApi, loginApi,secretKey } from "../Endpoints/ApiLinks";
 import axios from "axios";
 import router from "../Router";
 import CryptoJS from "crypto-js";
 
 const loginusername = ref(null);
-export { loginusername };
+const loginRole = ref(null)
+
+export { loginusername,loginRole };
 export const isLogin = localStorage.getItem("userInfo") != null;
 
 export const setuserData = () => {
@@ -28,13 +30,19 @@ export const setuserData = () => {
       "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
       ];
 
+      loginRole.value =decodedToken[
+      "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+      ];
+
     console.log("Username:", loginusername.value);
+    console.log("userRole",loginRole.value);
   } catch (error) {
     console.error("Token decoding failed:", error);
   }
 };
-export let setUserInfo = (data) => {
+export let setUserInfo = (data,loginData) => {
   localStorage.setItem("userInfo", data);
+  localStorage.setItem("loginInfo", JSON.stringify(loginData) )
   setuserData();
 };
 
@@ -45,16 +53,31 @@ const toaster = createToaster({
 });
 export let loginUser = async (username, password) => {
   const url = loginApi;
+const key =CryptoJS.enc.Utf8.parse(secretKey) ;
 
+  
+  const encryptedUsername = CryptoJS.AES.encrypt(username, key, {
+    mode: CryptoJS.mode.ECB,
+    padding: CryptoJS.pad.Pkcs7,
+  }).toString();
+
+  const encryptedPassword = CryptoJS.AES.encrypt(password, key, {
+    mode: CryptoJS.mode.ECB,
+    padding: CryptoJS.pad.Pkcs7,
+  }).toString();
   try {
     const res = await axios.post(url, {
-      username: username,
-      password: password,
+      username: encryptedUsername,
+      password: encryptedPassword ,
     });
 
     console.log("set user data after login");
-    setUserInfo(res.data.token);
-    router.push("/");
+    setUserInfo(res.data.token,res.data.userInfo);
+    console.log("user info ");
+    console.log(res.data.userInfo);
+
+
+   router.push("/");
   } catch (err) {
     console.error("error", err);
     toaster.error(err.response.data + "!");

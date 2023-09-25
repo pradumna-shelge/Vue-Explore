@@ -31,8 +31,9 @@ if(!isLogin){
 
 const search=(key)=>{
   console.log(key);
-      products.value = productsTemp.value.filter((a) => (a.productName.toLowerCase().match(key.toLowerCase())||( a.description.toLowerCase().match(key.toLowerCase()))));
-
+  key = key.trim();
+  key = key.split("  ").join(" ")
+  products.value = productsTemp.value.filter((a) => (a.productName.toLowerCase().match(key.toLowerCase())||( a.description.toLowerCase().match(key.toLowerCase()))));
 }
 
 onMounted(() => {
@@ -79,7 +80,7 @@ onMounted(() => {
     </form>
   </div>
 
-<div class="flex flex-wrap justify-start gap-32  mx-10">
+<div class="flex flex-wrap justify-evenly gap-32  mx-10">
 
   <div class="  " v-if="products" v-for="(p, index) in products" :key="index">
   
@@ -132,6 +133,9 @@ onMounted(() => {
   </div>
 </div>
 
+
+
+   
 </template>
 
 
