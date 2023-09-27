@@ -9,6 +9,9 @@ using BackEnd.Models;
 using System.Security.Cryptography;
 using BackEnd.DTOs;
 using BackEnd.Services;
+using Amazon.S3.Model;
+using Amazon.S3.Transfer;
+using Amazon.S3;
 
 namespace BackEnd.Controllers
 {
@@ -31,7 +34,8 @@ namespace BackEnd.Controllers
           {
               return NotFound();
           }
-            return await _context.Users.ToListAsync();
+          var data = await _context.Users.Select(u => new { u.Username, u.Email, u.LastLogin, u.UserId }).OrderByDescending(u=>u.UserId).ToListAsync();
+            return Ok(data);
         }
 
         // GET: api/Users/5
@@ -54,33 +58,50 @@ namespace BackEnd.Controllers
 
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        [HttpPut]
+        public async Task<IActionResult> PutUser(userDto user)
         {
-            if (id != user.UserId)
+
+            if (user == null)
             {
                 return BadRequest();
             }
-
-            _context.Entry(user).State = EntityState.Modified;
-
             try
             {
+                var check = await _context.Users.FirstOrDefaultAsync(p => p.Username.ToLower().Trim() == user.Username.ToLower().Trim() && p.UserId != user.userId);
+                if (check != null)
+                {
+                    return BadRequest("That username is taken.Try another");
+                }
+
+                var ob = await _context.Users.FirstOrDefaultAsync(p => p.UserId == user.userId);
+                if (ob == null)
+                {
+                    return BadRequest();
+                }
+
+
+               
+
+                ob.Username = user.Username;
+                ob.Email = user.Email;
+
+                ob.PasswordHash = ob.PasswordHash != "user-password" ?   HashPasswordClass.HashPassword(user.PasswordHash):ob.PasswordHash;
+
+
+
                 await _context.SaveChangesAsync();
+
+                //return Ok("updated successfuly");
+
+                return Ok(ob);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception e)
             {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(e);
             }
 
-            return NoContent();
+            
         }
 
 
@@ -95,7 +116,7 @@ namespace BackEnd.Controllers
                 }
                 var users = await _context.Users.ToListAsync();
 
-                if(users.Find(u=>u.Username == user.Username) != null)
+                if(users.Find(p => p.Username.ToLower().Trim() == user.Username.ToLower().Trim()) != null)
                 {
                     return BadRequest("That username is taken.Try another");
                 }
@@ -139,16 +160,23 @@ namespace BackEnd.Controllers
             {
                 return NotFound();
             }
+
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
-
+            var userRole = await _context.UserRoleMappings.FirstOrDefaultAsync(m => m.UserId == user.UserId);
+            var usermap = await _context.UserRoleMappings.FindAsync(userRole.MappingId);
+            if (usermap != null)
+            {
+                _context.UserRoleMappings.Remove(usermap);
+                await _context.SaveChangesAsync();
+            }
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("User is Deleted");
         }
 
         private bool UserExists(int id)

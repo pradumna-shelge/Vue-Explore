@@ -30,8 +30,8 @@ onMounted(() => {
 
     <navbar :flag="loginFlag" @login-success1="handleLoginSuccess"></navbar>
 
-    <div class="min-h-screen flex flex-col">
-      <main class="flex-grow my-32 ">
+    <div class="min-h-screen flex flex-col " >
+      <main class="flex-grow py-32 ">
         <router-view  @login-success="handleLoginSuccess"></router-view> 
         
       </main>

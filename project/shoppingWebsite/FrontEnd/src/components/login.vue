@@ -1,24 +1,23 @@
 <script setup lang='js'>
 import router from '../Router'
 import { loginUser } from '../Services/islogin.js'
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed ,inject} from 'vue';
 import { useVuelidate } from '@vuelidate/core';
-import { CustomValidationMsg } from '.././Vadidators/index'
-import logo from '../assets/logo.png'
-
+import { CustomValidationMsg } from '.././Vadidators/index';
+import forgotpassword from './Forgot-password.vue'
 import { email, minLength, required } from '@vuelidate/validators';
-const openModalFlag = ref(false);
-const closeModal = () => {
-    openModalFlag.value = false;
  
-};
 
+const childRef = ref(false);
 
 const openModal = () => {
-    openModalFlag.value = true;
    
+   childRef.value=true
 }
-
+const closeModal=()=>{
+       
+    childRef.value = false
+}
 
 
 const emits = defineEmits();
@@ -89,33 +88,8 @@ const signIn = async () => {
       </div>
     </section>
 
-   <div  class="modal "  v-if="openModalFlag">
-                  <div class="modal-content rounded-xl text-center ">
-                         <span @click="closeModal" class="hover:cursor-pointer text-rose-500" style="float:right;">&times;</span>
-           
-                         <div class="">
-                            <!-- <div class="bg-gray-900">
-                                <a   class="flex items-center">
-              <img  :src="logo" class=" logo" alt="ShopNest Logo">
-              <span class="self-center text-2xl font-semibold whitespace-nowrap text-white">ShopNest</span>
-            </a>
-                            </div> -->
-                            <h1 class="mb-5 text-2xl text-gray-800">Forgot Password</h1>
-                            <p class=" mb-3 text-md text-gray-700">An email sent to your registered email address with instructions for resetting your password.</p>
-
-                            <p class="text-xs text-sky-500">This email may take a few minutes to arrive in your inbox. </p>
-
-                         </div>
-                     
-                         <div class="m-3">
-                            <span class="text-green-500" @click="closeModal">Go to login page</span>
-                         </div>
-
-                  </div>
-                    
-                
-                </div>
-
+  
+      <forgotpassword :childRef="childRef" @closeModal="closeModal" ></forgotpassword>
 </template>
 
 

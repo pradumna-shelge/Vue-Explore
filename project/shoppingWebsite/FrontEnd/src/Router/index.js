@@ -5,6 +5,8 @@ import error from '../components/error.vue'
 import signup from '../components/signUp.vue'
 import dashboard from '../components/Admin/dashboard.vue'
 import ForgotPasswordVue from '../components/ForgotPassword.Vue'
+import userDashboard from '../components/Admin/UserDashbord.vue'
+import productDetail from '../components/productDetail.vue'
 const routes = [
     {
         path:'/',
@@ -50,9 +52,32 @@ const routes = [
         component:error
     },
     {
+    path: '/:nameOfProduct',
+    name: 'product',
+    component: productDetail,
+    props: true,
+  },
+    {
          path:'/dashboard',
         name:'dashboard',
         component:dashboard,
+        beforeEnter: (to, from, next) => {
+    
+      const isAuthenticated = localStorage.getItem('userInfo') != null; 
+      
+      if (isAuthenticated) {
+       
+        next();
+      } else {
+       
+        next({ name: 'login' });
+      }
+    }
+    },
+      {
+         path:'/user-dashboard',
+        name:'user-dashboard',
+        component:userDashboard,
         beforeEnter: (to, from, next) => {
     
       const isAuthenticated = localStorage.getItem('userInfo') != null; 

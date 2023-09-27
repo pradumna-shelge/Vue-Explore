@@ -73,3 +73,5 @@ app.Run();
 //        optionsBuilder.UseSqlServer(connectionString);
 //    }
 //}
+
+//Scaffold-DbContext "Server=PC0577\MSSQL2019;Database=MyShopping;Trusted_Connection=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -f

@@ -1,6 +1,7 @@
 html {
     overflow: scroll;
     overflow-x: hidden;
+    background-color: #c4dad369;
 }
 
 ::-webkit-scrollbar {

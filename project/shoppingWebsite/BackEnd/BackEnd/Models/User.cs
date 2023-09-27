@@ -23,6 +23,10 @@ public partial class User
 
     public string? LoginPcno { get; set; }
 
+    public string? ResetLink { get; set; }
+
+    public DateTime? ResetLinkExpiration { get; set; }
+
     public virtual ICollection<AddToCart> AddToCarts { get; set; } = new List<AddToCart>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();

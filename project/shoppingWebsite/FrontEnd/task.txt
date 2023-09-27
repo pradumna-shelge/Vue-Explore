@@ -27,9 +27,15 @@ Date- 21/09/2023
 3. Intermediate topics learning Vue.js 
 4. Meeting with Maniar sir
 
+Date- 25/09/2023
+1. Intermediate topics learning Vue.js.
+2. Meeting with Maniar sir.
+3. Forgot-password implementing in vue.js project.
 
-
-
+Date- 26/09/2023
+1. Implementing watchers, slot and provide/inject in Vue.js.
+2. User dashboard for admin in vue project.
+3. Meeting with Maniar sir.
 
 
 Removing of image file from server after deleting of record.

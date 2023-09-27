@@ -29,6 +29,9 @@ ADD OTP VARCHAR(6),
     OTPDateTime DATETIME,
     LastLogin DATETIME,
     LoginPCNo VARCHAR(50);
+ALTER TABLE Users
+ADD ResetLink VARCHAR(100), 
+    ResetLinkExpiration DATETIME;
 
 
 CREATE TABLE UserRoleMapping (

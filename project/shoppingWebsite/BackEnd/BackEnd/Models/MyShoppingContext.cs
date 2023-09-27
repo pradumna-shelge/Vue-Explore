@@ -127,6 +127,10 @@ public partial class MyShoppingContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.RegistrationDate).HasColumnType("datetime");
+            entity.Property(e => e.ResetLink)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.ResetLinkExpiration).HasColumnType("datetime");
             entity.Property(e => e.Username)
                 .HasMaxLength(50)
                 .IsUnicode(false);

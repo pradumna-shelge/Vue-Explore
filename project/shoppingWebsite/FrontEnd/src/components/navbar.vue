@@ -53,7 +53,9 @@ onMounted(() => {
            <button  class=""> <router-link to="/">Home</router-link> </button>
           <button  v-if="flag" class=""> <router-link to="/dashboard">Products</router-link> </button>
           <button  v-if="!flag" class=""> <router-link to="/login">Products</router-link> </button>
-          
+          <button   v-if="flag"  class=""> <router-link to="/user-dashboard">Users</router-link> </button>
+                <button  v-if="!flag" class=""> <router-link to="/login">Users</router-link> </button>
+
         </ul>
       </div>
     </div>

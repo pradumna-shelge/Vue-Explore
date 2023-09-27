@@ -106,3 +106,17 @@ export let AddUser = async (username, email, password) => {
     toaster.error(err.response.data + "!");
   }
 };
+
+export let forgotPassword = async (username) => {
+  const url = loginApi+`/forgot-password?userName=${username}`; 
+
+  try {
+    const res = await axios.post(url);
+    debugger;
+    console.log(res.data);
+    // toaster.success("Password reset instructions sent to your email.");
+  } catch (err) {
+    // console.error("error", err);
+    
+  }
+};

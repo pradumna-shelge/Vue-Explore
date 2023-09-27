@@ -25,6 +25,40 @@ namespace BackEnd.Controllers
             _config = configuration;
         }
 
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> forgotPassword(string userName)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(userName)) { return BadRequest("Please enter your name"); };
+
+                var userObject = await _contex.Users.FirstOrDefaultAsync(u => u.Username == userName);
+
+                if(userObject != null) {
+                 
+                    var currDate = DateTime.Now;
+                    
+
+                    if((userObject.ResetLinkExpiration != null && userObject.ResetLinkExpiration.Value.AddMinutes(5) < currDate) || userObject.ResetLinkExpiration == null)
+                    {
+                        userObject.ResetLinkExpiration= DateTime.Now;
+                        userObject.ResetLink = "";
+                    }
+                  await  _contex.SaveChangesAsync();
+
+                
+                }
+                    return Ok("Please check your email to Reset Password");
+
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> login(signInDTO obj)
         {

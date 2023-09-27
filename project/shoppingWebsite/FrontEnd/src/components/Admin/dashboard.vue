@@ -336,7 +336,7 @@ const sortColumn =(col,sortFlag)=>{
       });
       break;
      case 'description':
-      products.value.sort((a, b) => {
+      products.value.sort((a,b) => {
         const nameA = a.description.toUpperCase();
         const nameB = b.description.toUpperCase();
         if (nameA < nameB) return sortFlag ? -1 : 1;
@@ -366,7 +366,6 @@ const printTable = () => {
 
 
   const ws = XLSX.utils.json_to_sheet(filteredData);
-
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
   XLSX.writeFile(wb, 'Product Data.xlsx');
@@ -393,9 +392,9 @@ import Product from './Product.vue'
    
         <div v-if="loginRole=='admin'" class="basis-1/4  ">
           <div
-            class="w-full bg-white rounded-lg hover:shadow-xl dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700"
+            class="w-full border bg-white rounded-lg hover:shadow-xl  md:mt-0 sm:max-w-md xl:p-0 "
           >
-            <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+            <div class="p-6 space-y-4 md:space-y-6 sm:p-8 ">
               <h1
                 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl "
               >
@@ -407,7 +406,7 @@ import Product from './Product.vue'
                 @submit.prevent="addProduct"
                 enctype="multipart/form-data"
               >
-                <div >
+                <div>
                   <!-- <label for="productName"
                                 class="block mb-2 text-sm font-medium text-gray-900 ">Product Name</label> -->
                   <input maxlength="80"
@@ -415,7 +414,7 @@ import Product from './Product.vue'
                   id="product"
                     v-model="productData.productName"
                     type="text"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    class=" border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  border-gray-600   focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Product Name"
                   />
                   <span
@@ -453,7 +452,7 @@ import Product from './Product.vue'
 
                     v-model="productData.description"
                     id="description"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    class=" border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  border-gray-600   focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Product Description"
                   ></textarea>
                   <span
@@ -472,7 +471,7 @@ import Product from './Product.vue'
                     v-model="productData.price"
                     type="text"
                     id="price"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    class=" border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  border-gray-600   focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Price"
                   />
                   <span
@@ -483,14 +482,14 @@ import Product from './Product.vue'
                 </div>
                 <!-- <button
                   type="submit"
-                  class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-blue-600 hover:bg-blue-700 focus:ring-blue-800"
                 >
                   Add Product
                 </button> -->
           <div class="flex items-center justify-center gap-5">
     <button
     v-if="!productUpdateFlag"
-      type="submit" class=" btn text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-900">
+      type="submit" class=" btn text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 border-green-500 text-green-500 hover:text-white hover:bg-green-600 focus:ring-green-900">
       Save Product
     </button>
 
@@ -498,10 +497,10 @@ import Product from './Product.vue'
    <button
    @click="updateProduct()"
       v-if="productUpdateFlag"
-        type="button" class="  btn text-cyan-700 hover:text-white border border-cyan-700 hover:bg-cyan-800 focus:ring-4 focus:outline-none focus:ring-cyan-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-cyan-500 dark:text-cyan-500 dark:hover:text-white dark:hover:bg-cyan-600 dark:focus:ring-cyan-900">
+        type="button" class="  btn text-cyan-700 hover:text-white border border-cyan-700 hover:bg-cyan-800 focus:ring-4 focus:outline-none focus:ring-cyan-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 border-cyan-500 text-cyan-500 hover:text-white hover:bg-cyan-600 focus:ring-cyan-900">
         Update 
       </button>
-        <button @click="cancelUpdate"   type="button" class=" btn text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">{{ productUpdateFlag?'Cancel':'Reset'}}</button>
+        <button @click="cancelUpdate"   type="button" class=" btn text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 border-red-500 text-red-500 hover:text-white hover:bg-red-600 focus:ring-red-900">{{ productUpdateFlag?'Cancel':'Reset'}}</button>
 
 
   </div>
@@ -517,9 +516,9 @@ import Product from './Product.vue'
           <div class="basis-1/2">
             <div  class="flex gap-3" >
       
-              <table id="productable" class="hover:shadow-xl hover:border-2 text-right">
+              <table id="productable" class=" shadow-xl  text-left bg-white">
                 <thead class="w-100">
-                  <tr class="border bg-gray-50">
+                  <tr class="border-y ">
                     <th
                       class="  px-6 py-3  text-left text-sm leading-4 font-medium text-gray-500 tracking-wider"
                     >
@@ -579,9 +578,9 @@ import Product from './Product.vue'
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(p, index) in displayedProducts" :key="index">
-                    <td class="px-5 py-4  border  ">
-                      <div class="flex items-center justify-between  ">
+                  <tr v-for="(p, index) in displayedProducts" :key="index" class="hover:bg-gray-100 cursor-pointer" >
+                    <td class="px-5 py-2  border-b  ">
+                      <div class="flex items-center justify-start gap-3  ">
                         <div class=" ">
                           <img
                             class="h-10 w-10 rounded-full object-cover"
@@ -591,70 +590,73 @@ import Product from './Product.vue'
                         </div>
                         
                           <div
-                            class=" text-sm  font-medium text-gray-900"
+                            class=" text-black"
                           >
                             {{ p.productName }}
                           </div>
                         
                       </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-no-wrap border">
-                      <div class="text-sm leading-5 text-gray-900">
+                    <td class="px-6 py-2 whitespace-no-wrap border-b">
+                      <div class=" text-sm  text-gray-800">
                         {{ p.description }}
                       </div>
                     </td>
-                    <td class="px-2 py-4 whitespace-no-wrap border">
-                      <div class="text-sm leading-2 text-gray-900">
+                    <td class="px-2 py-2 whitespace-no-wrap border-b text-right">
+                      <div class=" leading-2 text-gray-900">
                         ${{ p.price }}
                       </div>
                     </td>
-                    <td v-if="loginRole == 'admin'"
-                      class="px-3 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium"
-                    >
-                      <a @click="patchValue(p)" class="text-indigo-600 hover:text-indigo-900"
-                        ><svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="w-6 h-6"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                          />
-                        </svg>
-                      </a>
-                      <span class="text-gray-300 mx-2">  </span>
+                  <td  v-if="loginRole == 'admin'"
+                            class="flex gap-2 px-3 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium"
+                          >
+                            <a @click="patchValue(p)" class="text-indigo-600 hover:text-indigo-900"
+                              ><svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="w-6 h-6"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                                />
+                              </svg>
+                            </a>
   
-                      <a
-                        @click="open(p.productId)"
-                        class="text-red-600 hover:text-red-900"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="w-6 h-6"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-              /></svg></a>
-                    </td>
+                            <a
+                              @click="open(p.productId)"
+                              class="text-red-600 hover:text-red-900"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="w-6 h-6"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                    /></svg></a>
+                    <a class="hover:text-green-700 text-green-500 mt-1">
+             <router-link :to="{ name: 'product', params: { nameOfProduct: p.productName } }">
+             View 
+            </router-link></a>
+                          </td>
                   </tr>
                 </tbody>
               </table>
-              <button v-if="loginRole!='admin'" @click="printTable()" class="Btn mt-2">
+              <!-- <button v-if="loginRole!='admin'" @click="printTable()" class="Btn mt-2">
            <svg class="svgIcon" viewBox="0 0 384 512" height="1em" xmlns="http://www.w3.org/2000/svg"><path d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"></path></svg>
            <span class="icon2"></span>
            <span class="tooltip">Download</span>
-        </button>
+        </button> -->
  
   </div>
             
@@ -665,17 +667,18 @@ import Product from './Product.vue'
           @change="resetpageNo"
             id="itemsPerPage"
             v-model="itemsPerPage"
-            class="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
+            class="block bg-transparent  py-2.5 px-0 w-full text-sm text-gray-500 border-0 border-b-2 border-gray-200 appearance-none text-gray-400 border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
           >
             <option v-for="option in perPageOptions" :key="option" :value="option">{{ option }}</option>
           </select>
         </div>
-              <vue3-tailwind-pagination
+              <vue3-tailwind-pagination class="bg-new text-black"
          :total="totalItem"
          :per_page="itemsPerPage"
          :active_color="'text-white'"
-         :active_background="'bg-red-500'"
+         :active_background="'bg-rose-500'"
          :current_page="currentPage"
+       
          @change="handlePageChange"
        />
             </div>
@@ -699,8 +702,8 @@ import Product from './Product.vue'
           <h2 class="text-xl">Confirm Delete</h2>
         <p class="text-gray-500 ">Are you sure you want to delete this product?</p>
         <div class="modal-buttons flex justify-center p-5">
-          <button @click="deleteProduct" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2" >Yes, delete it!</button>
-          <button @click="closeModal" class="text-white bg-gradient-to-r from-gray-400 via-gray-500 to-gray-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-gray-300 dark:focus:ring-gray-800 shadow-lg shadow-gray-500/50 dark:shadow-lg dark:shadow-gray-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Cancel</button>
+          <button @click="deleteProduct" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 focus:ring-red-800 shadow-lg shadow-red-500/50 shadow-lg shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2" >Yes, delete it!</button>
+          <button @click="closeModal" class="text-white bg-gradient-to-r from-gray-400 via-gray-500 to-gray-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-gray-300 focus:ring-gray-800 shadow-lg shadow-gray-500/50 shadow-lg shadow-gray-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">Cancel</button>
         </div>
       </div>
     </div>
@@ -712,6 +715,9 @@ th{
   max-width: 200px !important;
   min-width: 50px !important;
  
+}
+.bg-new{
+  background-color: rgba(255, 0, 0, 0);
 }
 .btn{
   width:150px;
