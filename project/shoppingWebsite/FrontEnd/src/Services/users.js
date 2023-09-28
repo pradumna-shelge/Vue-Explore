@@ -48,7 +48,7 @@ export async function UserDelete(id) {
 }
 
 
-export async function AddUser(username, email, password) {
+export async function AddUser(username, email, password,UserRole) {
   const url = userApi;
 debugger;
 return new Promise(async (resolve,reject)=>{
@@ -58,6 +58,7 @@ return new Promise(async (resolve,reject)=>{
         username: username,
         email: email,
         passwordHash: password,
+           userRole:(UserRole==-1||UserRole==2)?2:1
       });
      
       if (res.status === 200) {
@@ -74,7 +75,7 @@ return new Promise(async (resolve,reject)=>{
   };
 
 
-  export async function UpdateUser(id,username, email, password) {
+  export async function UpdateUser(id,username, email, password,UserRole) {
   const url = userApi;
 debugger;
 return new Promise(async (resolve,reject)=>{
@@ -85,6 +86,7 @@ return new Promise(async (resolve,reject)=>{
         username: username,
         email: email,
         passwordHash: password,
+        userRole:(UserRole==-1||UserRole==2)?2:1
       });
      
       if (res.status === 200) {

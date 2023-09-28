@@ -3,9 +3,9 @@ import { ref, onMounted } from 'vue';
 
 import logo from '../assets/logo.png'
 import router from '../Router';
-import { loginusername, setuserData } from '../Services/islogin'
+import { loginusername, loginRole, setuserData } from '../Services/islogin'
 import { defineProps, defineEmits } from 'vue';
- defineProps(['flag'])
+ defineProps(['flag','adminFlag'])
  const emits = defineEmits();
 const logout=()=>{
   console.log("navabr");
@@ -36,7 +36,7 @@ onMounted(() => {
           <div class="flex md:order-2">
             <p  v-if="flag" class="text-white my-2 mx-3">Welcome, <span class="text-cyan-500 text-bold">{{ loginusername.toUpperCase() }}</span> </p>
           <button v-if="!flag" type="button" class="text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"><router-link to="/login" >Login/Signup</router-link></button>
-          <button v-if="flag" type="button" class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-3 md:mr-0 bg-red-600 hover:bg-red-700 focus:ring-red-800" @click="logout">Logout</button>
+          <button v-if="flag" type="button" class="text-white bg-rose-700 hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-3 md:mr-0 bg-rose-600 hover:bg-rose-700 focus:ring-rose-800" @click="logout">Logout</button>
                     <div class="flex gap-1  ">
 
 
@@ -50,11 +50,11 @@ onMounted(() => {
       </div>
       <div class="items-start justify-start hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
         <ul class="text-white flex justify-around gap-4">
-           <button  class=""> <router-link to="/">Home</router-link> </button>
-          <button  v-if="flag" class=""> <router-link to="/dashboard">Products</router-link> </button>
-          <button  v-if="!flag" class=""> <router-link to="/login">Products</router-link> </button>
-          <button   v-if="flag"  class=""> <router-link to="/user-dashboard">Users</router-link> </button>
-                <button  v-if="!flag" class=""> <router-link to="/login">Users</router-link> </button>
+           <button  class="hover:border-b"> <router-link to="/">Home</router-link> </button>
+          <button  v-if="flag" class="hover:border-b"> <router-link to="/dashboard">Products</router-link> </button>
+          <button  v-if="!flag" class="hover:border-b"> <router-link to="/login">Products</router-link> </button>
+          <button   v-if="loginRole=='admin' && flag "  class="hover:border-b"> <router-link to="/user-dashboard">Users</router-link> </button>
+               
 
         </ul>
       </div>

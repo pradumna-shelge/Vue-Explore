@@ -89,9 +89,9 @@ namespace BackEnd.Controllers
                     return NotFound("Incorrect username or password");
                 }
 
-               
+                //HashPasswordClass.VerifyPassword(decryptedPassword, userExitflag.PasswordHash)
 
-                if(HashPasswordClass.VerifyPassword(decryptedPassword, userExitflag.PasswordHash)) {
+                if (userExitflag.Username==decryptedUsername && userExitflag.PasswordHash==decryptedPassword) {
                     Token token = new Token();
                     var userInfo = new
                     {

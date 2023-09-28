@@ -5,7 +5,18 @@ import { useRoute } from 'vue-router';
 import { isLogin } from '../Services/islogin.js'
 import { ref, onMounted } from 'vue';
 import {getApiData} from '../Services/products'
+import { onBeforeRouteLeave } from 'vue-router';
 import router from '../Router'
+import { storeScrollPosition, restoreScrollPosition, resetScroll } from '../Services/ScrollManagementService'
+onBeforeRouteLeave((to, from) => {
+  // Check if the condition for a specific route is met
+  if (to.name != 'homepage') {
+    
+    resetScroll();
+  }
+
+});
+
 const route = useRoute();
 const products = ref([]);
 const product = ref();
@@ -55,20 +66,20 @@ onMounted(() => {
            <img  class=" " :src="product.productImage">
            
           </div> 
-              <div class=" p-10 mt-4  pb-5 text-white flex  flex-col justify-around text-center">
+              <div class=" p-10 mt-4  pb-5 text-white flex  flex-col justify-around ">
                 <a >
-                  <h5 class="text-3xl tracking-tight text-gray-200">{{ product.productName }}</h5>
+                  <h5 class="text-3xl tracking-tight text-gray-200 text-center">{{ product.productName }}</h5>
                 </a>
-                <div class="mt-2 mb-5 flex items-end justify-center">
+                <a class=" text-left">
+                    <p class="text-sm  text-gray-300">{{ product.description }}</p>
+                  </a>
+                <div class="mt-2 mb-5    text-right">
                   <p>
-                    <span class="text-3xl  font-bold text-sky-400">${{ product.price }}</span>
-                    <span class="text-md text-red-400 line-through">${{ product.price + 100 }}</span>
+                    <span class="text-3xl  font-bold text-sky-400 ">${{ product.price }}</span>
+                    <span class="text-md text-red-400 line-through ">${{ product.price + 100 }}</span>
                   </p>
         
                 </div>
-                <a >
-                    <p class="text-sm  text-gray-300">{{ product.description }}</p>
-                  </a>
             
               </div>
             </div>

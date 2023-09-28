@@ -3,7 +3,7 @@ import * as XLSX from 'xlsx';
 import spinner from './spinner.vue'
 import { reactive, ref, computed, onMounted } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
-import { CustomValidationMsg } from '../../Vadidators/index'
+import { CustomValidationMsg, passwordValidator } from '../../Vadidators/index'
 import { email, minLength, required } from '@vuelidate/validators';
 import { isLogin, setUserInfo, loginUser } from '../../Services/islogin'
 import { loginRole } from './../../Services/islogin'
@@ -34,15 +34,16 @@ let formData = reactive({
     username: '',
     password: '',
     email: '',
+    userRole:-1
 });
 
 const rules = computed(() => {
     return {
       userId:{},
         username: { required },
-        password: !userUpdateFlag.value ? {  required  }:{},
+        password: {  required, passwordValidator  },
         email: { required, email },
-        
+        userRole:{}
       };
     });
     const $v = useVuelidate(rules, formData);
@@ -55,16 +56,20 @@ async function userAdd() {
       debugger;
     flag.value = true;
     console.log(formData);
-         AddUser (formData.username.toLowerCase().replace(/\s{2,}/g, ' ').trim() ?? "", formData.email.replace(/\s{2,}/g, ' ').trim() ?? "", formData.password).then((bcv)=>{
+         AddUser (formData.username.toLowerCase().replace(/\s{2,}/g, ' ').trim() ?? "", formData.email.replace(/\s{2,}/g, ' ').trim() ?? "", formData.password, formData.userRole).then((bcv)=>{
       
           flag.value = false;
-          toaster.success('User added successfully');
+          toaster.success('User added successfully.');
           getUserData();
           formData.username = '';
           formData.password = '';
           formData.email = '';
+          formData.userRole= -1 ;
         document.getElementById('userForm').reset();
       $v.value.$reset();
+        passwordStrength.value = -1
+
+      showPassword.value = false
         })
         .catch((error) => {
       flag.value = false;
@@ -81,18 +86,23 @@ async function updateUser() {
     debugger;
     flag.value = true;
     console.log(formData);
-    UpdateUser(formData.userId,formData.username.toLowerCase().replace(/\s{2,}/g, ' ').trim() ?? "", formData.email.replace(/\s{2,}/g, ' ').trim() ?? "", formData.password).then((bcv) => {
+    UpdateUser(formData.userId,formData.username.toLowerCase().replace(/\s{2,}/g, ' ').trim() ?? "", formData.email.replace(/\s{2,}/g, ' ').trim() ?? "", formData.password,formData.userRole).then((bcv) => {
 
       flag.value = false;
-      toaster.success('User updated successfully');
+      toaster.success('User updated successfully.');
       userUpdateFlag.value=false
       getUserData();
       formData.userId = -1;
       formData.username = '';
       formData.password = '';
       formData.email = '';
+       formData.userRole = -1;
       document.getElementById('userForm').reset();
       $v.value.$reset();
+        passwordStrength.value = -1
+
+      showPassword.value = false
+      
     })
       .catch((error) => {
         flag.value = false;
@@ -112,10 +122,11 @@ const cancelUpdate = () => {
 
             formData.email = null;
 
-  
+  formData.userRole = -1
+  passwordStrength.value=-1
     document.getElementById('userForm').reset();
     $v.value.$reset();
-
+  showPassword.value=false
 }
 
 
@@ -194,10 +205,12 @@ const printTable = () => {
 const patchValue = (ob) => {
   console.log(ob);
   userUpdateFlag.value=true;
- formData.userId=ob.userId
- formData.username=ob.username
- formData.password='user-password'
-formData.email = ob.email
+ formData.userId=ob.userId;
+ formData.username=ob.username;
+ formData.password=ob.passwordHash;
+formData.email = ob.email;
+  formData.userRole = ob.roleId;
+  checkPasswordStrength()
 }
 
 ///////////////////////////pagination ////////////
@@ -249,6 +262,63 @@ async function deleteUser() {
   }
 }
 
+///////////////////////////////password toggle//////////
+const showPassword = ref(false)
+const passwordStrengthText = ref('')
+const passwordStrength = ref(-1)
+const passwordToggle=()=>{
+  showPassword.value =!showPassword.value
+}
+
+const checkPasswordStrength =()=>{
+  const password = formData.password;
+  const strength = calculatePasswordStrength(password);
+  if(password=="")  passwordStrength.value=-1
+  else{
+
+    passwordStrength.value = strength;
+  }
+
+  passwordStrengthText.value = getPasswordStrengthText(strength);
+}
+const  calculatePasswordStrength=(password)=> {
+  debugger;
+  const uppercaseRegex = /[A-Z]/;
+  const lowercaseRegex = /[a-z]/;
+  const numberRegex = /[0-9]/;
+  const specialCharacterRegex = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/;
+
+  const passwordLength = password.length;
+  
+  let strength = 0;
+
+  if (passwordLength >= 8 && passwordLength <= 20) strength += 30;
+  if (uppercaseRegex.test(password)) strength += 20;
+  if (lowercaseRegex.test(password)) strength += 20;
+  if (numberRegex.test(password)) strength += 20;
+  if (specialCharacterRegex.test(password)) strength += 10;
+
+  return strength;
+}
+
+const  getPasswordStrengthText=(strength)=> {
+  if (strength >= 100) {
+    return 'Strong';
+  } else if (strength >= 50) {
+    return 'Moderate';
+  } else {
+    return 'Weak';
+  }
+};
+const bgcolor= () =>{
+  if (passwordStrength.value >= 100) {
+    return 'bg-green-500';
+  } else if (passwordStrength.value >= 50) {
+    return 'bg-yellow-500';
+  } else {
+    return 'bg-red-500';
+  }
+};
 onMounted(() => {
     getUserData();
     cancelUpdate();
@@ -296,23 +366,49 @@ onMounted(() => {
                            >
                          </div>
                           <div>
-                               <!-- <label for="productName"
-                                     class="block mb-2 text-sm font-medium text-gray-900 ">Product Name</label> -->
-                               <input maxlength="80"
-                               :class="{ 'border-2 border-rose-600 ': $v.password.$error }"
-                               id="product"
-                                 v-model="formData.password"
-                                 type="password"
-                                 class=" border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  border-gray-600   focus:ring-blue-500 focus:border-blue-500"
-                                 placeholder="User Password"
-                               />
+                              
+                                   <div class="relative border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600">
+      <input
+        maxlength="80"
+        :class="{ 'border-2 border-rose-600 ': $v.password.$error }"
+        id="product"
+        v-model="formData.password"
+        :type="showPassword ? 'text' : 'password'"
+        class="block w-full p-2.5 border-0 text-gray-900 sm:text-sm focus:ring-blue-500 focus:border-blue-500"
+        placeholder="User Password"
+         @input="checkPasswordStrength()"
+      />
+   
+      <button type="button"
+        @click="passwordToggle"
+        class="absolute top-1/2 right-3 transform -translate-y-1/2"
+      >
+        <svg v-if="showPassword" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+            <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+    <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+
+        </svg>
+        <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash-fill" viewBox="0 0 16 16">
+            <path d="m10.79 12.912-1.614-1.615a3.5 3.5 0 0 1-4.474-4.474l-2.06-2.06C.938 6.278 0 8 0 8s3 5.5 8 5.5a7.029 7.029 0 0 0 2.79-.588zM5.21 3.088A7.028 7.028 0 0 1 8 2.5c5 0 8 5.5 8 5.5s-.939 1.721-2.641 3.238l-2.062-2.062a3.5 3.5 0 0 0-4.474-4.474L5.21 3.089z"/>
+    <path d="M5.525 7.646a2.5 2.5 0 0 0 2.829 2.829l-2.83-2.829zm4.95.708-2.829-2.83a2.5 2.5 0 0 1 2.829 2.829zm3.171 6-12-12 .708-.708 12 12-.708.708z"/>
+
+        </svg>
+      </button>
+    </div>
+    <div  >
+
+          <div v-if="passwordStrength != -1" id="password-strength">
+        <div :class="bgcolor()" class="  text-xs text-center text-white" :style="{ width: passwordStrength + '%' }" id="password-strength-bar">{{ passwordStrengthText }}</div>
+      </div>
+     
+
                                <span
                                  class="text-red-400 text-xs text-end" 
                                  v-for="error in $v.password.$errors"
                                  >{{ CustomValidationMsg(error.$message, "User Password") }}</span
                                >
                              </div>
-                         
+                         </div>
                            <div>
                                    <!-- <label for="productName"
                                      class="block mb-2 text-sm font-medium text-gray-900 ">Product Name</label> -->
@@ -322,7 +418,7 @@ onMounted(() => {
                                      v-model="formData.email"
                                      type="email"
                                      class=" border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  border-gray-600   focus:ring-blue-500 focus:border-blue-500"
-                                     placeholder="User email"
+                                     placeholder="User Email"
                                    />
                                    <span
                                      class="text-red-400 text-xs text-end" 
@@ -330,6 +426,13 @@ onMounted(() => {
                                      >{{ CustomValidationMsg(error.$message, "User Email") }}</span
                                    >
                                  </div>
+                                  <div>
+        <select v-model="formData.userRole"  class="border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 border-gray-600 focus:ring-blue-500 focus:border-blue-500">
+          <option :value=-1 selected> Select user role</option>
+          <option :value=1>Admin</option>
+          <option :value=2>Standard User</option>
+        </select>
+      </div>
                          <!-- <button
                        type="submit"
                        class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-blue-600 hover:bg-blue-700 focus:ring-blue-800"
@@ -607,4 +710,5 @@ th {
         opacity: 1;
     }
 }
+   
 </style>

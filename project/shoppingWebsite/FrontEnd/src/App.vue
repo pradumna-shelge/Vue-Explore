@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import navbar from './components/navbar.vue'
 import footer1 from './components/footer.vue'
-import Product from './components/Admin/Product.vue'
+
 
 const loginFlag = ref(false)
 const handleLoginSuccess = () => {

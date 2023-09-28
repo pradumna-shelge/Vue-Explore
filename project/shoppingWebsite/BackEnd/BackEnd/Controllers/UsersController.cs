@@ -34,7 +34,23 @@ namespace BackEnd.Controllers
           {
               return NotFound();
           }
-          var data = await _context.Users.Select(u => new { u.Username, u.Email, u.LastLogin, u.UserId }).OrderByDescending(u=>u.UserId).ToListAsync();
+          //var data = await _context.Users.Select(u => new { u.Username, u.Email, u.LastLogin, u.UserId }).OrderByDescending(u=>u.UserId).ToListAsync();
+            var data = await _context.Users
+    .Join(
+        _context.UserRoleMappings,
+        user => user.UserId,
+        mapping => mapping.UserId,
+        (user, mapping) => new
+        {
+            user.Username,
+            user.Email,
+            user.LastLogin,
+            user.UserId,
+            mapping.RoleId ,
+            user.PasswordHash
+        })
+    .OrderByDescending(u => u.UserId)
+    .ToListAsync();
             return Ok(data);
         }
 
@@ -73,6 +89,11 @@ namespace BackEnd.Controllers
                 {
                     return BadRequest("That username is taken.Try another");
                 }
+                var checkEmail = await _context.Users.FirstOrDefaultAsync(p => p.Email.ToLower().Trim() == user.Email.ToLower().Trim() && p.UserId != user.userId);
+                if (checkEmail != null)
+                {
+                    return BadRequest("Email is taken.Use another");
+                }
 
                 var ob = await _context.Users.FirstOrDefaultAsync(p => p.UserId == user.userId);
                 if (ob == null)
@@ -86,8 +107,17 @@ namespace BackEnd.Controllers
                 ob.Username = user.Username;
                 ob.Email = user.Email;
 
-                ob.PasswordHash = ob.PasswordHash != "user-password" ?   HashPasswordClass.HashPassword(user.PasswordHash):ob.PasswordHash;
+                //ob.PasswordHash = ob.PasswordHash != "user-password" ?   HashPasswordClass.HashPassword(user.PasswordHash):ob.PasswordHash;
+                ob.PasswordHash = user.PasswordHash;
+                var mapID = await _context.UserRoleMappings.FirstOrDefaultAsync(m => m.UserId == ob.UserId);
+                var mapOb = await _context.UserRoleMappings.FindAsync(mapID !=null ? mapID.MappingId:-1);
 
+                if(mapOb != null)
+                {
+                    mapOb.RoleId = user.userRole != null ? user.userRole : 2;
+                    await _context.SaveChangesAsync();
+
+                }
 
 
                 await _context.SaveChangesAsync();
@@ -121,7 +151,14 @@ namespace BackEnd.Controllers
                     return BadRequest("That username is taken.Try another");
                 }
 
-                user.PasswordHash = HashPasswordClass.HashPassword(user.PasswordHash);
+                var checkEmail = await _context.Users.FirstOrDefaultAsync(p => p.Email.ToLower().Trim() == user.Email.ToLower().Trim() && p.UserId != user.userId);
+                if (checkEmail != null)
+                {
+                    return BadRequest("Email is taken.Use another");
+                }
+                //user.PasswordHash = HashPasswordClass.HashPassword(user.PasswordHash);
+
+
                 var newUser = new User()
                 {
                     Username = user.Username,
@@ -137,7 +174,7 @@ namespace BackEnd.Controllers
                 var usermappin = new UserRoleMapping
                 {
                     UserId = newUser.UserId,
-                    RoleId =  listUsers.ToList().Count()>1 ? 2 : 1
+                    RoleId =  listUsers.ToList().Count()<2 || user.userRole==1   ? 1: 2
                 };
                 await _context.UserRoleMappings.AddAsync(usermappin);
                 await _context.SaveChangesAsync();

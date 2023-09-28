@@ -10,6 +10,8 @@
 
         public string Email { get; set; } = null!;
 
+        public int? userRole { get; set; }
+
         public DateTime RegistrationDate { get; set; } = DateTime.Now;
     }
 }

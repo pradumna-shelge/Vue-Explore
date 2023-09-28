@@ -37,6 +37,16 @@ Date- 26/09/2023
 2. User dashboard for admin in vue project.
 3. Meeting with Maniar sir.
 
+Date- 27/09/2023
+1. User dashboard for admin in vue project.
+2.user sign in and add user authentication
+2. Meeting with Maniar sir.
+
+Date- 27/09/2023
+1. User dashboard for admin in vue project.
+2. user sign-in and add user authentication
+3. Meeting with Maniar sir.
+4. View product implementation
 
 Removing of image file from server after deleting of record.
 There should be searching and sorting in grid for each column.
