@@ -47,6 +47,7 @@ public partial class MyShoppingContext : DbContext
 
             entity.Property(e => e.CartId).HasColumnName("CartID");
             entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
+            entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.UserId).HasColumnName("UserID");
 
@@ -97,6 +98,9 @@ public partial class MyShoppingContext : DbContext
 
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.Description).HasColumnType("text");
+            entity.Property(e => e.Mrprice)
+                .HasColumnType("decimal(10, 2)")
+                .HasColumnName("MRPrice");
             entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.ProductName)
                 .HasMaxLength(100)

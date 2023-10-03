@@ -12,6 +12,7 @@ using Amazon.S3.Transfer;
 using Amazon.S3;
 using Amazon;
 using System.Net;
+using NuGet.Packaging;
 
 namespace BackEnd.Controllers
 {
@@ -37,7 +38,7 @@ namespace BackEnd.Controllers
               return NotFound();
           }
             var productNames = await _context.Products
-      .Select(x => new { x.ProductName,x.ProductId,x.Price,x.Description,x.ProductImage}).OrderByDescending(x => x.ProductId)
+      .Select(x => new { x.ProductName,x.ProductId,x.Price,x.Mrprice,x.Description,x.ProductImage}).OrderByDescending(x => x.ProductId)
       .ToListAsync();
 
             return Ok(productNames);
@@ -158,7 +159,7 @@ namespace BackEnd.Controllers
                 ob.ProductId = product.productId;
                 ob.Description = product.description;
 
-               
+                ob.Mrprice = product.mrp;
 
                 
                 await _context.SaveChangesAsync();
@@ -280,7 +281,9 @@ namespace BackEnd.Controllers
                         ProductName = product.productName.Trim(),
                         ProductImage = imageUrl,
                         Description = product.description.Trim(),
-                        Price = product.price
+                        Price = product.price,
+                        Mrprice = product.mrp
+                        
                     };
                     _context.Products.Add(product1);
                     await _context.SaveChangesAsync();
@@ -309,6 +312,17 @@ namespace BackEnd.Controllers
             if (product == null)
             {
                 return NotFound();
+            }
+
+            var cartProducts = await _context.AddToCarts
+    .Where(c => c.ProductId == product.ProductId )
+    .ToListAsync();
+           
+
+            if (cartProducts.Any())
+            {
+                _context.RemoveRange(cartProducts);
+                await _context.SaveChangesAsync();
             }
 
             _context.Products.Remove(product);

@@ -6,5 +6,5 @@ export const userApi = root+"Users";
 export const productApi = root+"Products";
 export const imageApi = root+"Fileupload/upload";
 export const loginApi = root+"Login";
-
+export const cartApi = root+"AddtoCart"
 export const secretKey = '770A8A65DA156D24EE2A093277530142'

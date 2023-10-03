@@ -48,6 +48,24 @@ Date- 27/09/2023
 3. Meeting with Maniar sir.
 4. View product implementation
 
+
+⁠⁠⁠Date- 28/09/2023
+1. User dashboard for password authentication with progress bar.
+2. Window scroll history store and restore for product grid.
+3. Implementing password toggle, email authentication, sorting and searching for users
+4.  Meeting with Maniar sir.
+
+⁠⁠⁠Date- 28/09/2023
+1. Add to cart table creation in SQL API development in Dotnet core.
+2. Implementation of cart component for ui user base cart data
+3.  Meeting with Maniar sir.
+
+
+⁠⁠⁠Date- 02/10/2023
+1. Add to cart frontend and API implementation
+2. Item add and remove quantity add remove quantity.
+3. Product discount on MRP and sell price on checkout
+
 Removing of image file from server after deleting of record.
 There should be searching and sorting in grid for each column.
 

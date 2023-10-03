@@ -7,6 +7,7 @@ import dashboard from '../components/Admin/dashboard.vue'
 import ForgotPasswordVue from '../components/ForgotPassword.Vue'
 import userDashboard from '../components/Admin/UserDashbord.vue'
 import productDetail from '../components/productDetail.vue'
+import usercart from '../components/userCart.vue'
 const routes = [
     {
         path:'/',
@@ -61,6 +62,23 @@ const routes = [
          path:'/dashboard',
         name:'dashboard',
         component:dashboard,
+        beforeEnter: (to, from, next) => {
+    
+      const isAuthenticated = localStorage.getItem('userInfo') != null; 
+      
+      if (isAuthenticated) {
+       
+        next();
+      } else {
+       
+        next({ name: 'login' });
+      }
+    }
+    },
+    {
+         path:'/product-cart',
+        name:'usercart',
+        component:usercart,
         beforeEnter: (to, from, next) => {
     
       const isAuthenticated = localStorage.getItem('userInfo') != null; 

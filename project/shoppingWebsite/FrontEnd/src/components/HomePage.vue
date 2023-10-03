@@ -5,9 +5,13 @@ import {  storeScrollPosition, restoreScrollPosition,resetScroll } from '../Serv
 import { isLogin } from '../Services/islogin.js'
 import { ref, onMounted} from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
-import {getApiData} from '../Services/products'
+import {getApiData, discription , productName } from '../Services/products'
 import router from '../Router'
 const scrollPosition = ref(0)
+import { getCartData } from '../Services/cartServices'
+import { useStore } from 'vuex';
+import  WelcomeMsg  from './WelcomeMsg.vue'
+const store = useStore();
 
 //
 onBeforeRouteLeave((to, from) => {
@@ -23,6 +27,8 @@ onBeforeRouteLeave((to, from) => {
 
 
 const products = ref([]);
+
+const flaglogin = ref(0);
 const productsTemp = ref([]);
 const { getData, data, error } = getApiData();
 const url = ref(productApi);
@@ -31,18 +37,29 @@ const asyncFunction = async () => {
   flag.value = true
   await getData(url.value).then(()=>{
     flag.value=false
+
   });
   console.log(data);
   products.value = data.value
   productsTemp.value = data.value
  
    await scroll();
+    getCartData()
+    .then((data) => {
+      store.dispatch('addList', data)
+
+    })
+    .catch((error) => {
+    });
 };
 const addTocart=()=>{
 if(!isLogin){
     router.push({path:'login'})
 }
  
+  
+   
+  
 }
 
 
@@ -61,10 +78,12 @@ const scroll = async () => {
   });
 };
 
+
+
 onMounted(() => {
   
   asyncFunction();
-
+  flaglogin.value++;
    
 }); 
 </script>
@@ -72,13 +91,13 @@ onMounted(() => {
 
 
 <template>
-
+  <WelcomeMsg :flag="flaglogin==0"   />
   <spinner :flag="flag"></spinner>
   <div class="mb-10 flex justify-center">
     <form class="w-full max-w-md">
       <label for="default-search" class="sr-only">Search Products</label>
       <div class="relative">
-        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+        <div class=" cursor-pointer absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
          
           <svg
             class="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -101,7 +120,8 @@ onMounted(() => {
           @input="search($event.target.value)"
           type="search"
           id="default-search"
-          class="w-full py-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 dark:focus:border-blue-500 dark:border-gray-600 dark:focus:ring-blue-500"
+          class="cursor-pointer
+          w-full py-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 dark:focus:border-blue-500 dark:border-gray-600 dark:focus:ring-blue-500"
           placeholder="Search here..."
           required
         />
@@ -111,6 +131,7 @@ onMounted(() => {
 
   <div class="flex flex-wrap justify-evenly gap-32  mx-10">
     <div class="  " v-if="products" v-for="(p, index) in products" :key="index">
+      <!-- <a :href="p.productImage" class="MagicThumb"><img :src="p.productImage"></a> -->
       
      
       <div class="card  p-2 shadow-xl  relative  flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-gray-50 shadow-md">
@@ -120,15 +141,15 @@ onMounted(() => {
       
       <div class="mt-4 px-2 pb-2">
         <a >
-          <h5 class="text-xl tracking-tight text-slate-900">{{p.productName }}</h5>
+          <h5 class="text-xl tracking-tight text-slate-900">{{ productName(p.productName)   }}</h5>
         </a>
         <a >
-            <p class="text-xs  text-black-300">{{ p.description  }}</p>
+            <p class="text-xs  text-gray-600">{{ discription(p.description)  }}</p>
           </a>
         <div class="mt-2 mb-5 flex items-end justify-end">
           <p>
-            <span class="text-2xl  font-bold text-slate-900">${{p.price }}</span>
-            <span class="text-sm text-red-600 text-slate-900 line-through">${{p.price +100}}</span>
+            <span class="text-xl  font-bold text-slate-900">${{p.price }}</span>
+            <span class="text-sm text-red-600  line-through mx-1">${{p.mrprice }}</span>
           </p>
           <!-- <div class="flex items-center">
             <svg aria-hidden="true" class="h-5 w-5 text-yellow-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -149,7 +170,7 @@ onMounted(() => {
             <span class="mr-2 ml-3 rounded bg-yellow-200 px-2.5 py-0.5 text-xs font-semibold">5.0</span>
           </div> -->
         </div>
-        <a  class="flex items-center justify-center rounded-md bg-rose-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300">
+        <a  class=" cursor-pointer flex items-center justify-center rounded-md bg-rose-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300">
 
              <router-link :to="{ name: 'product', params: { nameOfProduct: p.productName } }">
            View Product

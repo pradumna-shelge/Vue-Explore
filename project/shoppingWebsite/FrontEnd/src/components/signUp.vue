@@ -105,7 +105,7 @@ const bgcolor = () => {
                 <span class="text-red-400 text-xs text-end text-right" v-for="error in $v.username.$errors">{{ CustomValidationMsg(error.$message,"Username")  }}</span>
               </div>
               <div>                            
-                                     <div class="relative border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600">
+<div class="relative border border-gray-300 rounded-lg focus:ring-primary-600 focus:border-primary-600">
         <input
           maxlength="80"
           :class="{ 'border-2 border-rose-600 ': $v.password.$error }"

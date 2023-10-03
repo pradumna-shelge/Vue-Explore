@@ -39,7 +39,7 @@ const resetPassword = async () => {
         if (valid) {
             // Perform reset password logic here
             // ...
-            alert("")
+          
         }
     } catch (error) {
         console.error('Error:', error);

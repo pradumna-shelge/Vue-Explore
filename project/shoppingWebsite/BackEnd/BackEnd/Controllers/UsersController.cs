@@ -189,7 +189,7 @@ namespace BackEnd.Controllers
           
         }
 
-        // DELETE: api/Users/5
+        // DELETE: api/Users/5  
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
@@ -205,6 +205,14 @@ namespace BackEnd.Controllers
             }
             var userRole = await _context.UserRoleMappings.FirstOrDefaultAsync(m => m.UserId == user.UserId);
             var usermap = await _context.UserRoleMappings.FindAsync(userRole.MappingId);
+
+            var cartProducts = await _context.AddToCarts.Where(c => c.UserId == user.UserId).ToListAsync();
+
+            if(cartProducts.Any())
+            {
+                _context.RemoveRange(cartProducts);
+                await _context.SaveChangesAsync();
+            }
             if (usermap != null)
             {
                 _context.UserRoleMappings.Remove(usermap);

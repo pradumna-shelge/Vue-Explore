@@ -34,7 +34,7 @@ let formData = reactive({
     username: '',
     password: '',
     email: '',
-    userRole:-1
+    userRole:null
 });
 
 const rules = computed(() => {
@@ -43,7 +43,7 @@ const rules = computed(() => {
         username: { required },
         password: {  required, passwordValidator  },
         email: { required, email },
-        userRole:{}
+        userRole:{ required }
       };
     });
     const $v = useVuelidate(rules, formData);
@@ -64,7 +64,7 @@ async function userAdd() {
           formData.username = '';
           formData.password = '';
           formData.email = '';
-          formData.userRole= -1 ;
+          formData.userRole= null ;
         document.getElementById('userForm').reset();
       $v.value.$reset();
         passwordStrength.value = -1
@@ -96,7 +96,7 @@ async function updateUser() {
       formData.username = '';
       formData.password = '';
       formData.email = '';
-       formData.userRole = -1;
+       formData.userRole = null;
       document.getElementById('userForm').reset();
       $v.value.$reset();
         passwordStrength.value = -1
@@ -122,7 +122,7 @@ const cancelUpdate = () => {
 
             formData.email = null;
 
-  formData.userRole = -1
+  formData.userRole = null
   passwordStrength.value=-1
     document.getElementById('userForm').reset();
     $v.value.$reset();
@@ -173,6 +173,7 @@ const searchColumn = (col, key) => {
     key = key.trim();
     key = key.split("  ").join(" ")
     console.log(key);
+    debugger;
     switch (col) {
         case 'username':
             users.value = usersTemp.value.filter((a) => a.username.toLowerCase().match(key.toLowerCase()));
@@ -180,6 +181,20 @@ const searchColumn = (col, key) => {
         case 'email':
             users.value = usersTemp.value.filter((a) => a.email.toLowerCase().match(key.toLowerCase()));
             break;
+            case 'date':
+              if(key!=''){
+                users.value = usersTemp.value.filter((user) => {
+                  const userLastLoginDate = new Date(user.lastLogin).getDate();
+                  const keyDate = new Date(key).getDate();
+                   console.log(userLastLoginDate);
+                   console.log(keyDate);
+                  return userLastLoginDate === keyDate;
+                });
+              }
+              else{
+                users.value = usersTemp.value;
+              }
+      break;
     }
 }
 
@@ -428,10 +443,16 @@ onMounted(() => {
                                  </div>
                                   <div>
         <select v-model="formData.userRole"  class="border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 border-gray-600 focus:ring-blue-500 focus:border-blue-500">
-          <option :value=-1 selected> Select user role</option>
+          <option   :value="null" selected> Select user role</option>
           <option :value=1>Admin</option>
           <option :value=2>Standard User</option>
         </select>
+
+        <span
+                                       class="text-red-400 text-xs text-end" 
+                                       v-for="error in $v.userRole.$errors"
+                                       >{{ CustomValidationMsg(error.$message, "User Role") }}</span
+                                     >
       </div>
                          <!-- <button
                        type="submit"
@@ -501,7 +522,8 @@ onMounted(() => {
               <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
             </svg></span>
             <div class="flex justify-center">
-  
+                <input placeholder="search  by date"  class="border-2  rounded px-1" type="date"  @input="searchColumn('date', $event.target.value)">
+
             </div>
                             </th>
            
@@ -520,42 +542,44 @@ onMounted(() => {
                    <td class="px-6 py-4 whitespace-no-wrap border-b">{{ user.email }}</td>
                    <td class="px-6 py-4 whitespace-no-wrap border-b">{{ formatDate (new Date( user.lastLogin)) }}</td>
                   <td v-if="loginRole == 'admin'"
-                          class="flex gap-5 px-3 py-4 whitespace-no-wrap text-right text-sm leading-5 font-medium"
+                          class="flex gap-2 py-3 whitespace-no-wrap text-right text-sm leading-5 font-medium"
                         >
-                          <a @click="patchValue(user)" class="text-indigo-600 hover:text-indigo-900"
-                            ><svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke-width="1.5"
-                              stroke="currentColor"
-                              class="w-6 h-6"
-                            >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                              />
-                            </svg>
-                          </a>
+                          <button @click="patchValue(user)" class="Btn text-indigo-600 hover:text-indigo-900">
+         <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    class="w-6 h-6"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                                    />
+                                  </svg>
+          
+               <span class="tooltip">Edit</span>
+            </button>
   
-                          <a
-                            @click="open(user.userId)"
-                            class="text-red-600 hover:text-red-900"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke-width="1.5"
-                              stroke="currentColor"
-                              class="w-6 h-6"
-                            >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                  /></svg></a>
+                                           <button @click="open(user.userId)" class="Btn  text-red-600 hover:text-red-900">
+       <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    class="w-6 h-6"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                        /></svg>
+          
+             <span class="tooltip">Delete</span>
+          </button>
                         </td>
                  </tr>
                </tbody>
@@ -621,94 +645,98 @@ th {
     width: 150px;
 }
 
+.btn{
+  width:150px;
+}
 .Btn {
-    width: 37px;
+ width: 37px;
     height: 34px;
-    border: none;
-    border-radius: 50%;
-    background-color: rgb(7, 2, 85);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    position: relative;
-    transition-duration: .3s;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.11);
+  border: none;
+  border-radius: 50%;
+ 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  cursor: pointer;
+  position: relative;
+  transition-duration: .3s;
+  /* box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.11); */
 }
 
 .svgIcon {
-    fill: rgb(214, 178, 255);
+  fill: rgb(110, 3, 233);
 }
 
 .icon2 {
-    width: 11px;
-    height: 5px;
-    border-bottom: 2px solid rgb(182, 143, 255);
-    border-left: 2px solid rgb(182, 143, 255);
-    border-right: 2px solid rgb(182, 143, 255);
+  width: 11px;
+  height: 5px;
+  border-bottom: 2px solid rgb(182, 143, 255);
+  border-left: 2px solid rgb(182, 143, 255);
+  border-right: 2px solid rgb(182, 143, 255);
 }
 
 .tooltip {
-    position: absolute;
-    right: -105px;
-    opacity: 0;
-    background-color: rgb(12, 12, 12);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition-duration: .2s;
-    pointer-events: none;
-    letter-spacing: 0.5px;
+     right: 0px;
+    margin-top: -63px;
+  opacity: 0;
+  background-color: rgb(12, 12, 12);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition-duration: .2s;
+  pointer-events: none;
+  letter-spacing: 0.5px;
 }
 
 .tooltip::before {
-    position: absolute;
-    content: "";
-    width: 10px;
-    height: 10px;
-    background-color: rgb(12, 12, 12);
-    background-size: 1000%;
-    background-position: center;
-    transform: rotate(45deg);
-    left: -5%;
-    transition-duration: .3s;
+  position: absolute;
+  content: "";
+  width: 10px;
+  height: 10px;
+
+  background-size: 1000%;
+  background-position: center;
+  transform: rotate(45deg);
+  left: -5%;
+  transition-duration: .3s;
 }
 
 .Btn:hover .tooltip {
-    opacity: 1;
-    transition-duration: .3s;
+  opacity: 1;
+  transition-duration: .3s;
 }
 
 .Btn:hover {
-    background-color: rgb(150, 94, 255);
-    transition-duration: .3s;
+ 
+  transition-duration: .3s;
 }
 
 .Btn:hover .icon2 {
-    border-bottom: 2px solid rgb(235, 235, 235);
-    border-left: 2px solid rgb(235, 235, 235);
-    border-right: 2px solid rgb(235, 235, 235);
+  border-bottom: 2px solid rgb(235, 235, 235);
+  border-left: 2px solid rgb(235, 235, 235);
+  border-right: 2px solid rgb(235, 235, 235);
 }
 
 .Btn:hover .svgIcon {
-    fill: rgb(255, 255, 255);
-    animation: slide-in-top 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+
+  animation: slide-in-top 0.6s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
 }
 
 @keyframes slide-in-top {
-    0% {
-        transform: translateY(-10px);
-        opacity: 0;
-    }
+  0% {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
 
-    100% {
-        transform: translateY(0px);
-        opacity: 1;
-    }
+  100% {
+    transform: translateY(0px);
+    opacity: 1;
+  }
 }
+
    
 </style>

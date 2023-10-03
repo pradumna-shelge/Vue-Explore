@@ -85,3 +85,26 @@ export async function ProductDelete(id, url) {
     }
   });
 }
+export function discription(dis){
+
+  if(dis.length>70){
+    return dis.substring(0,70)+"...";
+  }
+  else{
+    return dis;
+  }
+
+   
+}
+
+export function productName(dis){
+
+  if(dis.length>20){
+    return dis.substring(0,20)+"...";
+  }
+  else{
+    return dis;
+  }
+
+   
+}

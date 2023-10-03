@@ -33,7 +33,7 @@ namespace BackEnd.Controllers
             {
                 if (string.IsNullOrEmpty(userName)) { return BadRequest("Please enter your name"); };
 
-                var userObject = await _contex.Users.FirstOrDefaultAsync(u => u.Username == userName);
+                var userObject = await _contex.Users.FirstOrDefaultAsync(u => u.Username == userName.ToLower());
 
                 if(userObject != null) {
                  
